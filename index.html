@@ -539,8 +539,6 @@ h1 .w > span{display:inline-block;animation:wordUp .95s var(--ease) both;animati
 .legenda-extra,.chip--extra::before{background:var(--amber)}
 .chip--incluso::before,.chip--extra::before{content:"";margin-right:6px;vertical-align:1px}
 .chip--extra{border-color:rgba(224,168,46,.55);color:var(--amber-ink);background:var(--amber-t)}
-/* sete serviços: o último fica centralizado na grade de três colunas */
-@media (min-width:1025px){.svc-grid li:nth-child(3n+1):last-child{grid-column:2}}
 </style>
 </head>
 <body>
@@ -667,40 +665,30 @@ h1 .w > span{display:inline-block;animation:wordUp .95s var(--ease) both;animati
   <div class="wrap sec">
     <div class="section-head">
       <p class="eyebrow center reveal">Nossos serviços</p>
-      <h2 class="reveal" style="--delay:80ms">Sete frentes.<br>Um único escritório.</h2>
+      <h2 class="reveal" style="--delay:80ms">Seis frentes.<br>Um único escritório.</h2>
       <p class="section-sub reveal" style="--delay:160ms">Cada departamento da WG cuida de uma parte da rotina. Juntos, mantêm a sua empresa em dia, da abertura ao balanço.</p>
     </div>
 
     <ul class="svc-grid">
       <li class="reveal">
-        <a class="svc-inner" href="https://wgcontabilidade.com.br/abertura-de-empresas/">
-          <span class="svc-badge"><svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="100" d="M3 9.5 4.6 4h14.8L21 9.5"/><path pathLength="100" d="M3 9.5a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/><path pathLength="100" d="M5 12.4V20h14v-7.6"/><path pathLength="100" d="M10 20v-4.5h4V20"/></svg></span>
-          <h3>Abertura de Empresas</h3>
-          <p class="svc-tag">Do contrato social ao CNPJ</p>
-          <p class="svc-desc">Abertura, alteração e encerramento de empresas, com acompanhamento de registro na Junta Comercial e nos cartórios.</p>
-          <span class="more">Saiba mais <i>→</i></span>
-        </a>
-      </li>
-      <li class="reveal" style="--delay:90ms">
         <a class="svc-inner" href="https://wgcontabilidade.com.br/contabilidade/">
-          <!-- razonete (conta T) -->
           <span class="svc-badge"><svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="100" d="M3 5.5h18"/><path pathLength="100" d="M12 5.5V21"/><path pathLength="100" d="M5 10h4"/><path pathLength="100" d="M5 13.5h4"/><path pathLength="100" d="M5 17h2.5"/><path pathLength="100" d="M15 10h4"/><path pathLength="100" d="M15 13.5h4"/></svg></span>
-          <h3>Contabilidade</h3>
+          <h3>Departamento Contábil</h3>
           <p class="svc-tag">Débito e crédito no lugar certo</p>
           <p class="svc-desc">Execução da contabilidade de empresas de todos os portes, no Simples Nacional, no Lucro Presumido e no Lucro Real.</p>
           <span class="more">Saiba mais <i>→</i></span>
         </a>
       </li>
-      <li class="reveal" style="--delay:180ms">
+      <li class="reveal" style="--delay:90ms">
         <a class="svc-inner" href="https://wgcontabilidade.com.br/escrita-fiscal/">
           <span class="svc-badge"><svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="100" d="M6 3h12v18l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5L6 21z"/><path pathLength="100" d="M9 8h6"/><path pathLength="100" d="M9 12h6"/><path pathLength="100" d="M9 16h3"/></svg></span>
-          <h3>Escrita Fiscal</h3>
+          <h3>Departamento Fiscal</h3>
           <p class="svc-tag">Em dia com o Fisco</p>
           <p class="svc-desc">Escrituração dos registros fiscais e elaboração das guias de informação e de recolhimento dos tributos.</p>
           <span class="more">Saiba mais <i>→</i></span>
         </a>
       </li>
-      <li class="reveal">
+      <li class="reveal" style="--delay:180ms">
         <a class="svc-inner" href="https://wgcontabilidade.com.br/departamento-pessoal/">
           <span class="svc-badge"><svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect pathLength="100" x="3" y="5" width="18" height="15" rx="2.5"/><path pathLength="100" d="M9 3v4"/><path pathLength="100" d="M15 3v4"/><circle pathLength="100" cx="8.8" cy="11.6" r="2"/><path pathLength="100" d="M5.6 17c.6-1.7 1.8-2.5 3.2-2.5s2.6.8 3.2 2.5"/><path pathLength="100" d="M15 11h3.2"/><path pathLength="100" d="M15 14.5h3.2"/></svg></span>
           <h3>Departamento Pessoal</h3>
@@ -709,16 +697,16 @@ h1 .w > span{display:inline-block;animation:wordUp .95s var(--ease) both;animati
           <span class="more">Saiba mais <i>→</i></span>
         </a>
       </li>
-      <li class="reveal" style="--delay:90ms">
-        <a class="svc-inner" href="https://wgcontabilidade.com.br/recursos-humanos/">
-          <span class="svc-badge"><svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle pathLength="100" cx="9" cy="8" r="3.2"/><path pathLength="100" d="M2.8 20c.8-3.5 3.2-5.2 6.2-5.2s5.4 1.700 6.2 5.2"/><circle pathLength="100" cx="17.2" cy="9.2" r="2.4"/><path pathLength="100" d="M17.4 14.2c2.1.1 3.5 1.4 4 4"/></svg></span>
-          <h3>Recursos Humanos</h3>
-          <p class="svc-tag">Gente certa no lugar certo</p>
-          <p class="svc-desc">Recrutamento e seleção, contratação temporária e permanente, estágios, treinamento e desenvolvimento.</p>
+      <li class="reveal">
+        <a class="svc-inner" href="https://wgcontabilidade.com.br/servicos/">
+          <span class="svc-badge"><svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="100" d="M19 5 5 19"/><circle pathLength="100" cx="7.5" cy="7.5" r="2.5"/><circle pathLength="100" cx="16.5" cy="16.5" r="2.5"/></svg></span>
+          <h3>Consultoria Tributária</h3>
+          <p class="svc-tag">Menos imposto, dentro da lei</p>
+          <p class="svc-desc">Planejamento tributário, escolha do melhor regime, revisão de tributos e orientação fiscal, incluindo a preparação para a Reforma Tributária.</p>
           <span class="more">Saiba mais <i>→</i></span>
         </a>
       </li>
-      <li class="reveal" style="--delay:180ms">
+      <li class="reveal" style="--delay:90ms">
         <a class="svc-inner" href="https://wgcontabilidade.com.br/servicos/">
           <span class="svc-badge"><svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="100" d="M4 4v16h16"/><path pathLength="100" d="m7.5 15 3.8-4 3 2.8L19.5 8"/><path pathLength="100" d="M15.8 8h3.7v3.7"/></svg></span>
           <h3>Consultoria Empresarial</h3>
@@ -727,13 +715,12 @@ h1 .w > span{display:inline-block;animation:wordUp .95s var(--ease) both;animati
           <span class="more">Saiba mais <i>→</i></span>
         </a>
       </li>
-      <li class="reveal">
-        <a class="svc-inner" href="https://wgcontabilidade.com.br/servicos/">
-          <!-- percentual: departamento tributário -->
-          <span class="svc-badge"><svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="100" d="M19 5 5 19"/><circle pathLength="100" cx="7.5" cy="7.5" r="2.5"/><circle pathLength="100" cx="16.5" cy="16.5" r="2.5"/></svg></span>
-          <h3>Consultoria Tributária</h3>
-          <p class="svc-tag">Menos imposto, dentro da lei</p>
-          <p class="svc-desc">Planejamento tributário, escolha do melhor regime, revisão de tributos e orientação fiscal, incluindo a preparação para a Reforma Tributária.</p>
+      <li class="reveal" style="--delay:180ms">
+        <a class="svc-inner" href="https://wgcontabilidade.com.br/recursos-humanos/">
+          <span class="svc-badge"><svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle pathLength="100" cx="9" cy="8" r="3.2"/><path pathLength="100" d="M2.8 20c.8-3.5 3.2-5.2 6.2-5.2s5.4 1.700 6.2 5.2"/><circle pathLength="100" cx="17.2" cy="9.2" r="2.4"/><path pathLength="100" d="M17.4 14.2c2.1.1 3.5 1.4 4 4"/></svg></span>
+          <h3>Consultoria RH</h3>
+          <p class="svc-tag">Gente certa no lugar certo</p>
+          <p class="svc-desc">Recrutamento e seleção, contratação temporária e permanente, estágios, treinamento e desenvolvimento.</p>
           <span class="more">Ver todos os serviços <i>→</i></span>
         </a>
       </li>
