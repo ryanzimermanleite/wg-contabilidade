@@ -530,6 +530,17 @@ h1 .w > span{display:inline-block;animation:wordUp .95s var(--ease) both;animati
   *,*::before,*::after{animation:none!important;transition:none!important}
   .sym{translate:none}
 }
+
+/* legenda e marcadores de "incluso nos honorários" x "custo adicional" */
+.legenda{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 22px;margin-top:16px;padding:0;list-style:none;font-size:.78rem;font-weight:600;color:var(--muted)}
+.legenda li{display:flex;align-items:center;gap:7px}
+.legenda i,.chip--incluso::before,.chip--extra::before{display:inline-block;width:8px;height:8px;border-radius:50%;flex:none}
+.legenda-incluso,.chip--incluso::before{background:var(--teal)}
+.legenda-extra,.chip--extra::before{background:var(--amber)}
+.chip--incluso::before,.chip--extra::before{content:"";margin-right:6px;vertical-align:1px}
+.chip--extra{border-color:rgba(224,168,46,.55);color:var(--amber-ink);background:var(--amber-t)}
+/* sete serviços: o último fica centralizado na grade de três colunas */
+@media (min-width:1025px){.svc-grid li:nth-child(3n+1):last-child{grid-column:2}}
 </style>
 </head>
 <body>
@@ -589,7 +600,7 @@ h1 .w > span{display:inline-block;animation:wordUp .95s var(--ease) both;animati
         </a>
         <a class="btn btn-ghost btn-lg" href="#servicos">Ver os serviços ↓</a>
       </div>
-      <p class="hero-trust load" style="--i:10">Escritório fundado em 1976. Atendimento de segunda a sexta, das 8h às 17h.</p>
+      <p class="hero-trust load" style="--i:10">Escritório fundado em 1976. Atendimento de segunda a quinta, das 8h às 18h, e sexta, das 8h às 17h.</p>
     </div>
 
     <div class="stage load zoom" id="stage" style="--i:3">
@@ -656,7 +667,7 @@ h1 .w > span{display:inline-block;animation:wordUp .95s var(--ease) both;animati
   <div class="wrap sec">
     <div class="section-head">
       <p class="eyebrow center reveal">Nossos serviços</p>
-      <h2 class="reveal" style="--delay:80ms">Seis frentes.<br>Um único escritório.</h2>
+      <h2 class="reveal" style="--delay:80ms">Sete frentes.<br>Um único escritório.</h2>
       <p class="section-sub reveal" style="--delay:160ms">Cada departamento da WG cuida de uma parte da rotina. Juntos, mantêm a sua empresa em dia, da abertura ao balanço.</p>
     </div>
 
@@ -676,7 +687,7 @@ h1 .w > span{display:inline-block;animation:wordUp .95s var(--ease) both;animati
           <span class="svc-badge"><svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="100" d="M3 5.5h18"/><path pathLength="100" d="M12 5.5V21"/><path pathLength="100" d="M5 10h4"/><path pathLength="100" d="M5 13.5h4"/><path pathLength="100" d="M5 17h2.5"/><path pathLength="100" d="M15 10h4"/><path pathLength="100" d="M15 13.5h4"/></svg></span>
           <h3>Contabilidade</h3>
           <p class="svc-tag">Débito e crédito no lugar certo</p>
-          <p class="svc-desc">Execução da contabilidade de empresas de todos os regimes e portes: normais, Simples, EPP e ME.</p>
+          <p class="svc-desc">Execução da contabilidade de empresas de todos os portes, no Simples Nacional, no Lucro Presumido e no Lucro Real.</p>
           <span class="more">Saiba mais <i>→</i></span>
         </a>
       </li>
@@ -710,9 +721,19 @@ h1 .w > span{display:inline-block;animation:wordUp .95s var(--ease) both;animati
       <li class="reveal" style="--delay:180ms">
         <a class="svc-inner" href="https://wgcontabilidade.com.br/servicos/">
           <span class="svc-badge"><svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="100" d="M4 4v16h16"/><path pathLength="100" d="m7.5 15 3.8-4 3 2.8L19.5 8"/><path pathLength="100" d="M15.8 8h3.7v3.7"/></svg></span>
-          <h3>Consultoria</h3>
+          <h3>Consultoria Empresarial</h3>
           <p class="svc-tag">Muito mais do que números</p>
-          <p class="svc-desc">Consultoria empresarial, societária, tributária e financeira, com assessoria e orientação fiscal.</p>
+          <p class="svc-desc">Consultoria empresarial, societária e financeira: apoio nas decisões, na estrutura e no crescimento do negócio.</p>
+          <span class="more">Saiba mais <i>→</i></span>
+        </a>
+      </li>
+      <li class="reveal">
+        <a class="svc-inner" href="https://wgcontabilidade.com.br/servicos/">
+          <!-- percentual: departamento tributário -->
+          <span class="svc-badge"><svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="100" d="M19 5 5 19"/><circle pathLength="100" cx="7.5" cy="7.5" r="2.5"/><circle pathLength="100" cx="16.5" cy="16.5" r="2.5"/></svg></span>
+          <h3>Consultoria Tributária</h3>
+          <p class="svc-tag">Menos imposto, dentro da lei</p>
+          <p class="svc-desc">Planejamento tributário, escolha do melhor regime, revisão de tributos e orientação fiscal, incluindo a preparação para a Reforma Tributária.</p>
           <span class="more">Ver todos os serviços <i>→</i></span>
         </a>
       </li>
@@ -860,7 +881,11 @@ h1 .w > span{display:inline-block;animation:wordUp .95s var(--ease) both;animati
     <div class="section-head">
       <p class="eyebrow center reveal">Além da rotina</p>
       <h2 class="reveal" style="--delay:80ms">Serviços que vão além do balancete.</h2>
-      <p class="section-sub reveal" style="--delay:160ms">A WG também cuida das entregas digitais ao Fisco, do imposto de renda da pessoa física e da capacitação da sua equipe.</p>
+      <p class="section-sub reveal" style="--delay:160ms">A WG também cuida das entregas digitais ao Fisco, do imposto de renda da pessoa física e da capacitação da sua equipe. Parte disso faz parte da rotina mensal e já está nos honorários; o restante é contratado à parte.</p>
+      <ul class="legenda reveal" style="--delay:220ms" aria-label="Legenda">
+        <li><i class="legenda-incluso"></i>Incluso nos honorários</li>
+        <li><i class="legenda-extra"></i>Custo adicional</li>
+      </ul>
     </div>
 
     <ul class="extras-grid">
@@ -890,7 +915,7 @@ h1 .w > span{display:inline-block;animation:wordUp .95s var(--ease) both;animati
           <p class="extra-tag">Entregue no prazo</p>
           <h3>Obrigações digitais</h3>
           <p class="extra-desc">As entregas eletrônicas que o Fisco exige da sua empresa, preparadas e transmitidas pelo escritório.</p>
-          <ul class="chips"><li class="chip">SPED Contábil</li><li class="chip">EFD-Contribuições</li><li class="chip">eSocial</li><li class="chip">PER/DCOMP</li></ul>
+          <ul class="chips"><li class="chip chip--incluso">SPED Contábil</li><li class="chip chip--incluso">EFD-Contribuições</li><li class="chip chip--incluso">eSocial</li><li class="chip chip--extra">PER/DCOMP</li></ul>
         </div>
       </li>
       <li class="reveal" style="--delay:100ms">
@@ -927,7 +952,7 @@ h1 .w > span{display:inline-block;animation:wordUp .95s var(--ease) both;animati
           <p class="extra-tag">O leão sob controle</p>
           <h3>Pessoa física</h3>
           <p class="extra-desc">Declaração de imposto de renda e apuração dos tributos do sócio e da família, sem correria em abril.</p>
-          <ul class="chips"><li class="chip">Imposto de Renda PF</li><li class="chip">Ganho de capital</li><li class="chip">Carnê-leão</li></ul>
+          <ul class="chips"><li class="chip chip--extra">Imposto de Renda PF</li><li class="chip chip--extra">Ganho de capital</li><li class="chip chip--extra">Carnê-leão</li></ul>
         </div>
       </li>
       <li class="reveal" style="--delay:200ms">
@@ -956,7 +981,7 @@ h1 .w > span{display:inline-block;animation:wordUp .95s var(--ease) both;animati
           <p class="extra-tag">Conhecimento que fica na empresa</p>
           <h3>Treinamentos</h3>
           <p class="extra-desc">Capacitação para quem cuida do dia a dia administrativo, fiscal e de pessoal dentro da sua empresa.</p>
-          <ul class="chips"><li class="chip">Treinamentos em geral</li><li class="chip">Desenvolvimento</li></ul>
+          <ul class="chips"><li class="chip chip--extra">Treinamentos em geral</li><li class="chip chip--extra">Desenvolvimento</li></ul>
         </div>
       </li>
     </ul>
@@ -1013,28 +1038,34 @@ h1 .w > span{display:inline-block;animation:wordUp .95s var(--ease) both;animati
         <div class="art-panel reveal" data-anim="left" aria-hidden="true">
           <svg class="art-svg" viewBox="0 0 420 315">
             <g class="art-line">
-              <path class="draw" pathLength="100" style="--d:.2s" d="M210 158 84 78"/>
-              <path class="draw" pathLength="100" style="--d:.3s" d="M210 158V44"/>
-              <path class="draw" pathLength="100" style="--d:.4s" d="M210 158 336 78"/>
-              <path class="draw" pathLength="100" style="--d:.5s" d="M210 158l126 80"/>
-              <path class="draw" pathLength="100" style="--d:.6s" d="M210 158v114"/>
-              <path class="draw" pathLength="100" style="--d:.7s" d="M210 158 84 238"/>
+              <path class="draw" pathLength="100" style="--d:0.2s" d="M210 158V40"/>
+              <path class="draw" pathLength="100" style="--d:0.3s" d="M210 158 316 75"/>
+              <path class="draw" pathLength="100" style="--d:0.4s" d="M210 158H360"/>
+              <path class="draw" pathLength="100" style="--d:0.5s" d="M210 158 316 241"/>
+              <path class="draw" pathLength="100" style="--d:0.6s" d="M210 158V276"/>
+              <path class="draw" pathLength="100" style="--d:0.7s" d="M210 158 104 241"/>
+              <path class="draw" pathLength="100" style="--d:0.8s" d="M210 158H60"/>
+              <path class="draw" pathLength="100" style="--d:0.9s" d="M210 158 104 75"/>
             </g>
             <!-- pontos que viajam dos departamentos até o centro -->
-            <g class="art-dot fadein" style="--d:1.4s">
-              <circle r="3.5"><animateMotion dur="2.8s" begin="0s" repeatCount="indefinite" path="M112 96 176 136"/></circle>
-              <circle r="3.5"><animateMotion dur="2.8s" begin="-.9s" repeatCount="indefinite" path="M210 62V114"/></circle>
-              <circle r="3.5"><animateMotion dur="2.8s" begin="-1.8s" repeatCount="indefinite" path="M308 96 244 136"/></circle>
-              <circle r="3.5"><animateMotion dur="2.8s" begin="-.4s" repeatCount="indefinite" path="M308 220 244 180"/></circle>
-              <circle r="3.5"><animateMotion dur="2.8s" begin="-1.3s" repeatCount="indefinite" path="M210 254V202"/></circle>
-              <circle r="3.5"><animateMotion dur="2.8s" begin="-2.2s" repeatCount="indefinite" path="M112 220 176 180"/></circle>
+            <g class="art-dot fadein" style="--d:1.6s">
+              <circle r="3.5"><animateMotion dur="2.8s" begin="0s" repeatCount="indefinite" path="M210 66V126"/></circle>
+              <circle r="3.5"><animateMotion dur="2.8s" begin="-0.35s" repeatCount="indefinite" path="M293 93 239 136"/></circle>
+              <circle r="3.5"><animateMotion dur="2.8s" begin="-0.70s" repeatCount="indefinite" path="M327 158H250"/></circle>
+              <circle r="3.5"><animateMotion dur="2.8s" begin="-1.05s" repeatCount="indefinite" path="M293 223 239 180"/></circle>
+              <circle r="3.5"><animateMotion dur="2.8s" begin="-1.40s" repeatCount="indefinite" path="M210 250V190"/></circle>
+              <circle r="3.5"><animateMotion dur="2.8s" begin="-1.75s" repeatCount="indefinite" path="M127 223 181 180"/></circle>
+              <circle r="3.5"><animateMotion dur="2.8s" begin="-2.10s" repeatCount="indefinite" path="M93 158H170"/></circle>
+              <circle r="3.5"><animateMotion dur="2.8s" begin="-2.45s" repeatCount="indefinite" path="M127 93 181 136"/></circle>
             </g>
-            <g class="pop" style="--d:.7s"><rect class="art-node" x="38" y="64" width="92" height="28" rx="14"/><text class="art-lbl" x="84" y="81.5" text-anchor="middle">CONTÁBIL</text></g>
-            <g class="pop" style="--d:.8s"><rect class="art-node" x="164" y="30" width="92" height="28" rx="14"/><text class="art-lbl" x="210" y="47.5" text-anchor="middle">FISCAL</text></g>
-            <g class="pop" style="--d:.9s"><rect class="art-node" x="290" y="64" width="92" height="28" rx="14"/><text class="art-lbl" x="336" y="81.5" text-anchor="middle">PESSOAL</text></g>
-            <g class="pop" style="--d:1s"><rect class="art-node" x="290" y="224" width="92" height="28" rx="14"/><text class="art-lbl" x="336" y="241.5" text-anchor="middle">TRIBUTÁRIO</text></g>
-            <g class="pop" style="--d:1.1s"><rect class="art-node" x="164" y="258" width="92" height="28" rx="14"/><text class="art-lbl" x="210" y="275.5" text-anchor="middle">SOCIETÁRIO</text></g>
-            <g class="pop" style="--d:1.2s"><rect class="art-node" x="38" y="224" width="92" height="28" rx="14"/><text class="art-lbl" x="84" y="241.5" text-anchor="middle">RH</text></g>
+            <g class="pop" style="--d:0.7s"><rect class="art-node" x="164" y="26" width="92" height="28" rx="14"/><text class="art-lbl" x="210" y="43.5" text-anchor="middle">FISCAL</text></g>
+            <g class="pop" style="--d:0.8s"><rect class="art-node" x="270" y="61" width="92" height="28" rx="14"/><text class="art-lbl" x="316" y="78.5" text-anchor="middle">PESSOAL</text></g>
+            <g class="pop" style="--d:0.9s"><rect class="art-node" x="314" y="144" width="92" height="28" rx="14"/><text class="art-lbl" x="360" y="161.5" text-anchor="middle">TRIBUTÁRIO</text></g>
+            <g class="pop" style="--d:1.0s"><rect class="art-node" x="270" y="227" width="92" height="28" rx="14"/><text class="art-lbl" x="316" y="244.5" text-anchor="middle">SOCIETÁRIO</text></g>
+            <g class="pop" style="--d:1.1s"><rect class="art-node" x="164" y="262" width="92" height="28" rx="14"/><text class="art-lbl" x="210" y="279.5" text-anchor="middle">AUTOMAÇÃO</text></g>
+            <g class="pop" style="--d:1.2s"><rect class="art-node" x="58" y="227" width="92" height="28" rx="14"/><text class="art-lbl" x="104" y="244.5" text-anchor="middle">RH</text></g>
+            <g class="pop" style="--d:1.3s"><rect class="art-node" x="14" y="144" width="92" height="28" rx="14"/><text class="art-lbl" x="60" y="161.5" text-anchor="middle">CONTÁBIL</text></g>
+            <g class="pop" style="--d:1.4s"><rect class="art-node" x="58" y="61" width="92" height="28" rx="14"/><text class="art-lbl" x="104" y="78.5" text-anchor="middle">CONSULTORIA</text></g>
             <g class="pop" style="--d:.1s">
               <circle class="art-ringp pulse" cx="210" cy="158" r="40"/>
               <circle cx="210" cy="158" r="38" fill="#0E8585"/>
@@ -1131,7 +1162,7 @@ h1 .w > span{display:inline-block;animation:wordUp .95s var(--ease) both;animati
       <li class="how-step is-on reveal">
         <span class="how-num">1</span>
         <h3>Você chama a WG</h3>
-        <p>Pelo WhatsApp, por telefone ou pelo site. O atendimento é de segunda a sexta, das 8h às 17h.</p>
+        <p>Pelo WhatsApp, por telefone ou pelo site. O atendimento é de segunda a quinta, das 8h às 18h, e na sexta, das 8h às 17h.</p>
       </li>
       <li class="how-step is-on reveal" style="--delay:120ms">
         <span class="how-num">2</span>
@@ -1230,7 +1261,7 @@ h1 .w > span{display:inline-block;animation:wordUp .95s var(--ease) both;animati
       </a>
       <span>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-        Segunda a sexta, das 8h às 17h
+        Segunda a quinta, das 8h às 18h · Sexta, das 8h às 17h
       </span>
     </p>
   </div>
@@ -1284,7 +1315,7 @@ h1 .w > span{display:inline-block;animation:wordUp .95s var(--ease) both;animati
         </p>
         <p>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          <span>Segunda a sexta, das 8h às 17h</span>
+          <span>Segunda a quinta, das 8h às 18h · Sexta, das 8h às 17h</span>
         </p>
       </address>
     </div>
