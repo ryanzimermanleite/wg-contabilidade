@@ -141,21 +141,27 @@ def ordenar(artigos: list[dict]) -> list[dict]:
 
 
 # ----------------------------------------------------------------- 2. pedaços do site reaproveitados
-def pedacos_do_site(indice: str) -> dict:
+def pedacos_do_site(indice: str, prefixo: str = "../") -> dict:
+    """Estilo, cabeçalho e rodapé da página inicial, com os links ajustados para uma página
+    em outra pasta (prefixo "../", caso do blog) ou na raiz (prefixo "./")."""
     estilo = re.search(r"<style>.*?</style>", indice, re.S).group(0)
     cabeca = indice[: indice.index("</head>")]
     links = "\n".join(re.findall(r"^<link[^>]*>$", cabeca, re.M))
     header = re.search(r"<header class=\"nav\".*?</header>", indice, re.S).group(0)
     footer = re.search(r"<footer.*?</footer>", indice, re.S).group(0)
 
-    def para_subpasta(bloco: str) -> str:
-        bloco = bloco.replace('href="#topo"', 'href="../"')
-        bloco = re.sub(r'href="#([^"]+)"', r'href="../#\1"', bloco)
-        bloco = bloco.replace('href="blog/"', 'href="./"')
-        bloco = bloco.replace('<a href="../#blog">Blog</a>', '<a href="./" class="is-current">Blog</a>')
+    def ajustar(bloco: str) -> str:
+        if prefixo == "../":
+            bloco = bloco.replace('href="blog/"', 'href="./"')
+        bloco = bloco.replace('href="#topo"', f'href="{prefixo}"')
+        bloco = re.sub(r'href="#([^"]+)"', lambda m: f'href="{prefixo}#{m.group(1)}"', bloco)
+        # outros caminhos relativos da raiz (ex.: privacidade.html)
+        bloco = re.sub(r'href="(?!https?:|#|\.\./|\./|mailto:|tel:|data:)([^"]+)"', lambda m: f'href="{prefixo}{m.group(1)}"', bloco)
+        if prefixo == "../":
+            bloco = bloco.replace('<a href="../#blog">Blog</a>', '<a href="./" class="is-current">Blog</a>')
         return bloco
 
-    return {"estilo": estilo, "links": links, "header": para_subpasta(header), "footer": para_subpasta(footer)}
+    return {"estilo": estilo, "links": links, "header": ajustar(header), "footer": ajustar(footer)}
 
 
 CSS_BLOG = """
@@ -183,6 +189,7 @@ CSS_BLOG = """
 .artigo h1{margin:0 0 16px;font-size:clamp(1.7rem,1.2rem+1.8vw,2.5rem);line-height:1.15;letter-spacing:-.02em}
 .artigo-lead{margin:0 0 28px;font-size:1.12rem;line-height:1.55;color:var(--muted)}
 .artigo-corpo p{margin:0 0 18px;font-size:1.02rem;line-height:1.75}
+.artigo-corpo h2{margin:30px 0 10px;font-size:1.25rem;line-height:1.3}
 .fonte-box{margin:32px 0 0;padding:16px 20px;border-left:3px solid var(--teal);background:var(--panel);border-radius:0 12px 12px 0;font-size:.9rem;color:var(--muted)}
 .fonte-box a{color:var(--teal-d);font-weight:600;word-break:break-all}
 .cta-box{margin:44px 0 0;padding:30px 28px;border-radius:20px;background:var(--teal);color:#fff;text-align:center}
