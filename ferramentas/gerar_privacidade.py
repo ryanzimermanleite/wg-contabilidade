@@ -39,7 +39,7 @@ CORPO = f"""<section class="band band--white">
         <p>Não vendemos nem cedemos dados pessoais a terceiros. O compartilhamento acontece apenas: com órgãos públicos, por obrigação legal; com fornecedores de tecnologia que operam os nossos sistemas, sempre sob contrato e com as medidas de segurança adequadas; e quando houver determinação judicial ou de autoridade competente.</p>
 
         <h2>6. Links para outros sites</h2>
-        <p>O site contém links para o WhatsApp, redes sociais (Instagram, LinkedIn e Facebook) e para a plataforma de BI da WG. Ao acessá-los, valem as políticas de privacidade de cada um desses serviços.</p>
+        <p>O site contém links para o WhatsApp e para as redes sociais da WG (Instagram, LinkedIn e Facebook). Ao acessá-los, valem as políticas de privacidade de cada um desses serviços.</p>
 
         <h2>7. Segurança</h2>
         <p>Adotamos medidas técnicas e administrativas para proteger os dados contra acessos não autorizados, perda ou alteração indevida, como controle de acesso por usuário, certificados digitais, cópias de segurança e orientação da equipe. Nenhum sistema é totalmente seguro; se identificarmos um incidente que possa trazer risco relevante a você, comunicaremos os envolvidos e a Autoridade Nacional de Proteção de Dados (ANPD), conforme a lei.</p>

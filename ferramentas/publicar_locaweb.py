@@ -50,8 +50,8 @@ MANIFESTO = PASTA_BACKUPS / "publicado.json"
 NA_RAIZ_TAMBEM = ("sitemap.xml", "robots.txt")      # o sitemap e o robots do site novo (os antigos vão para o backup)
 PERGUNTAR = True
 
-# Redirecionamentos temporários (302) enquanto o site novo é avaliado; trocar por 301 depois
-# que estiver aprovado, para o Google transferir a relevância das páginas antigas.
+# Redirecionamentos DEFINITIVOS (301): o site novo foi aprovado em 09/11/2026, e o Google transfere a
+# relevância das páginas antigas para as equivalentes do site novo.
 BLOCO_HTACCESS = r"""# BEGIN Site novo WG
 # Gerado por ferramentas/publicar_locaweb.py. Para voltar ao WordPress, rode o script com
 # --desfazer (ou apague este bloco e os arquivos index.html, privacidade.html e a pasta blog).
@@ -65,20 +65,20 @@ RewriteCond %{HTTP_HOST} ^wgcontabilidade\.com\.br$ [NC]
 RewriteCond %{SERVER_PORT} 80
 RewriteRule ^(.*)$ https://wgcontabilidade.com.br/$1 [R=301,L]
 RewriteCond %{HTTP_HOST} ^(www\.)?wgcontabilidade\.com\.br$ [NC]
-RewriteRule ^(contabilidade|escrita-fiscal|departamento-pessoal|recursos-humanos|servicos|abertura-de-empresas)/?$ /#servicos [R=302,NE,L]
+RewriteRule ^(contabilidade|escrita-fiscal|departamento-pessoal|recursos-humanos|servicos|abertura-de-empresas)/?$ /#servicos [R=301,NE,L]
 RewriteCond %{HTTP_HOST} ^(www\.)?wgcontabilidade\.com\.br$ [NC]
-RewriteRule ^a-empresa/?$ /#diferenciais [R=302,NE,L]
+RewriteRule ^a-empresa/?$ /#diferenciais [R=301,NE,L]
 RewriteCond %{HTTP_HOST} ^(www\.)?wgcontabilidade\.com\.br$ [NC]
-RewriteRule ^fale-conosco/?$ /#contato [R=302,NE,L]
+RewriteRule ^fale-conosco/?$ /#contato [R=301,NE,L]
 RewriteCond %{HTTP_HOST} ^(www\.)?wgcontabilidade\.com\.br$ [NC]
-RewriteRule ^politica-de-privacidade/?$ /privacidade.html [R=302,L]
+RewriteRule ^politica-de-privacidade/?$ /privacidade.html [R=301,L]
 # demais páginas e posts antigos do WordPress vão para a página inicial; arquivos e pastas
 # que existem (como /wp-content e /blog) e as rotas do WordPress listadas abaixo seguem normais
 RewriteCond %{HTTP_HOST} ^(www\.)?wgcontabilidade\.com\.br$ [NC]
 RewriteCond %{REQUEST_URI} !^/(wp-admin|wp-content|wp-includes|wp-json|wp-login\.php|wp-cron\.php|xmlrpc\.php|\.well-known)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^.+$ / [R=302,L]
+RewriteRule ^.+$ / [R=301,L]
 </IfModule>
 # END Site novo WG
 """
