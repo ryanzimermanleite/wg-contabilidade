@@ -71,7 +71,7 @@ def main() -> None:
     destino.write_text(
         pagina(p, "Política de Privacidade | WG Contabilidade",
                "Como a WG Contabilidade trata os dados pessoais de quem visita o site e dos clientes do escritório, conforme a LGPD.",
-               CORPO),
+               CORPO, caminho="privacidade.html"),
         encoding="utf-8", newline="\n")
     print("gerado:", destino.name)
 

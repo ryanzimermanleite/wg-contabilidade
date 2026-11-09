@@ -42,6 +42,8 @@ CADERNOS = {
 }
 WHATSAPP = "https://api.whatsapp.com/send?phone=5519997816418&text=" + quote("Olá! Vim pelo blog do site e quero falar com um especialista.")
 NA_INICIAL = 4          # 1 destaque + 3 na lista da página inicial
+SITE = "https://wgcontabilidade.com.br"   # endereço oficial: canonical, og:url e sitemap.xml (o GitHub Pages é espelho)
+ARQUIVO_SITEMAP = RAIZ / "sitemap.xml"
 MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"]
 
 
@@ -146,7 +148,7 @@ def pedacos_do_site(indice: str, prefixo: str = "../") -> dict:
     em outra pasta (prefixo "../", caso do blog) ou na raiz (prefixo "./")."""
     estilo = re.search(r"<style>.*?</style>", indice, re.S).group(0)
     cabeca = indice[: indice.index("</head>")]
-    links = "\n".join(re.findall(r"^<link[^>]*>$", cabeca, re.M))
+    links = "\n".join(l for l in re.findall(r"^<link[^>]*>$", cabeca, re.M) if 'rel="canonical"' not in l)
     header = re.search(r"<header class=\"nav\".*?</header>", indice, re.S).group(0)
     footer = re.search(r"<footer.*?</footer>", indice, re.S).group(0)
 
@@ -224,7 +226,12 @@ JS_BLOG = """
 """
 
 
-def pagina(p: dict, titulo: str, descricao: str, corpo: str) -> str:
+def pagina(p: dict, titulo: str, descricao: str, corpo: str, caminho: str | None = None) -> str:
+    """`caminho` = endereço da página a partir da raiz do site (ex.: "blog/x.html"); vira o canonical e o og:url,
+    para o Google tratar o domínio oficial como o original (e não o espelho do GitHub Pages)."""
+    oficial = ""
+    if caminho is not None:
+        oficial = f'<link rel="canonical" href="{SITE}/{caminho}">\n<meta property="og:url" content="{SITE}/{caminho}">\n'
     return f"""<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -237,7 +244,7 @@ def pagina(p: dict, titulo: str, descricao: str, corpo: str) -> str:
 <meta property="og:locale" content="pt_BR">
 <meta property="og:title" content="{esc(titulo)}">
 <meta property="og:description" content="{esc(descricao)}">
-{p['links']}
+{oficial}{p['links']}
 {p['estilo']}
 {CSS_BLOG}
 </head>
@@ -288,7 +295,8 @@ def gerar_indice(p: dict, artigos: list[dict]) -> None:
   </div>
 </section>"""
     (PASTA_BLOG / "index.html").write_text(
-        pagina(p, "Blog | WG Contabilidade", "Notícias contábeis, fiscais, trabalhistas e tributárias selecionadas todos os dias pela WG Contabilidade.", corpo),
+        pagina(p, "Blog | WG Contabilidade", "Notícias contábeis, fiscais, trabalhistas e tributárias selecionadas todos os dias pela WG Contabilidade.", corpo,
+               caminho="blog/"),
         encoding="utf-8", newline="\n")
 
 
@@ -324,7 +332,8 @@ def gerar_artigo(p: dict, a: dict, outros: list[dict]) -> None:
   </div>
 </section>"""
     (PASTA_BLOG / f"{a['slug']}.html").write_text(
-        pagina(p, f"{a['titulo']} | Blog WG Contabilidade", a["resumo"], corpo), encoding="utf-8", newline="\n")
+        pagina(p, f"{a['titulo']} | Blog WG Contabilidade", a["resumo"], corpo, caminho=f"blog/{a['slug']}.html"),
+        encoding="utf-8", newline="\n")
 
 
 # ----------------------------------------------------------------- 4. seção da página inicial
@@ -365,6 +374,43 @@ def atualizar_inicial(indice: str, artigos: list[dict]) -> str:
     return indice[:inicio] + novo + indice[fim:]
 
 
+# ----------------------------------------------------------------- 5. "Leia também" e sitemap.xml
+def entrada(a: dict) -> tuple[str, str]:
+    """Ordem em que a notícia entrou no blog (artigos.json só cresce)."""
+    return (a.get("adicionado_em", ""), a.get("slug", ""))
+
+
+def leia_tambem(a: dict, artigos: list[dict]) -> list[dict]:
+    """Até 3 notícias que entraram no blog ANTES desta, as mais recentes, da mesma editoria primeiro.
+    Só as anteriores: quando chegam notícias novas, as páginas antigas continuam iguais, e a atualização diária
+    sobe só as páginas novas (e não o blog inteiro) para o GitHub e para a Locaweb."""
+    k = entrada(a)
+    mesma, outras = [], []
+    for o in artigos:                                   # artigos já vem da mais nova para a mais antiga
+        if o is a or entrada(o) >= k:
+            continue
+        if o["editoria"] == a["editoria"]:
+            mesma.append(o)
+            if len(mesma) == 3:
+                break
+        elif len(outras) < 3:
+            outras.append(o)
+    return (mesma + outras)[:3]
+
+
+def gerar_sitemap(artigos: list[dict]) -> None:
+    """sitemap.xml do domínio oficial: página inicial, blog, privacidade e cada notícia. A data da página inicial e
+    do blog é a da notícia mais recente (assim o arquivo só muda quando entra notícia nova)."""
+    ultima = max((iso(a.get("publicado_em", "")) or iso(a.get("edicao", "")) for a in artigos), default="")
+    urls = [(f"{SITE}/", ultima), (f"{SITE}/blog/", ultima), (f"{SITE}/privacidade.html", "")]
+    urls += [(f"{SITE}/blog/{a['slug']}.html", iso(a.get("publicado_em", "")) or iso(a.get("edicao", ""))) for a in artigos]
+    linhas = "".join(
+        f"  <url><loc>{esc(u)}</loc>" + (f"<lastmod>{d}</lastmod>" if d else "") + "</url>\n" for u, d in urls)
+    ARQUIVO_SITEMAP.write_text('<?xml version="1.0" encoding="UTF-8"?>\n'
+                               '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + linhas + "</urlset>\n",
+                               encoding="utf-8", newline="\n")
+
+
 # ----------------------------------------------------------------- principal
 def main() -> None:
     PASTA_BLOG.mkdir(exist_ok=True)
@@ -379,9 +425,9 @@ def main() -> None:
     indice = INDEX.read_text(encoding="utf-8")
     p = pedacos_do_site(indice)
     gerar_indice(p, artigos)
-    for i, a in enumerate(artigos):
-        outros = [o for o in artigos if o is not a][:3]
-        gerar_artigo(p, a, outros)
+    for a in artigos:
+        gerar_artigo(p, a, leia_tambem(a, artigos))
+    gerar_sitemap(artigos)
     INDEX.write_text(atualizar_inicial(indice, artigos), encoding="utf-8", newline="\n")
     print(f"Blog atualizado: {novos} notícia(s) nova(s), {len(artigos)} no total. Páginas em {PASTA_BLOG}.")
 

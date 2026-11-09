@@ -2,3 +2,4 @@
 Thumbs.db
 ferramentas/*.log
 backups_locaweb/
+__pycache__/

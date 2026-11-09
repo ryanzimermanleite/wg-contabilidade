@@ -8,19 +8,30 @@ dos e-mails do WG Jornal), /wp-admin e o subdomínio do BI.
 Uso, num terminal aberto na pasta do site:
     python ferramentas/publicar_locaweb.py              publica (pede servidor, usuário e senha do FTP)
     python ferramentas/publicar_locaweb.py --simular    mostra o que seria feito, sem conectar
-    python ferramentas/publicar_locaweb.py --atualizar  só reenvia as páginas (ex.: blog com notícias novas)
+    python ferramentas/publicar_locaweb.py --atualizar  envia só o que mudou desde a última publicação
     python ferramentas/publicar_locaweb.py --desfazer   tira o site novo e volta o WordPress como estava
 
 A senha é digitada na hora e não fica gravada. Para rodar sem perguntas (ex.: tarefa agendada),
-defina as variáveis de ambiente WG_FTP_HOST, WG_FTP_USUARIO e WG_FTP_SENHA.
+defina as variáveis de ambiente WG_FTP_HOST, WG_FTP_USUARIO e WG_FTP_SENHA e use --sem-perguntar.
+
+O FTP da Locaweb tem manias (conferidas em 2026): só aceita TLS com cifras antigas e certificado autoassinado,
+e no canal de dados a ordem é comando, aperto de mão TLS e só então a resposta 150 (na ordem padrão do ftplib
+os dois lados ficam esperando). A conexão abaixo (FTPSLocaweb) já faz assim.
+
+O que já subiu fica anotado em backups_locaweb/publicado.json (nome do arquivo e impressão digital); com
+--atualizar só vai o que mudou, e sem nada novo nem conecta.
 """
 from __future__ import annotations
 
 import argparse
 import ftplib
 import getpass
+import hashlib
 import io
+import json
 import os
+import socket
+import ssl
 import sys
 import time
 import urllib.request
@@ -34,6 +45,10 @@ MARCA_INI = "# BEGIN Site novo WG"
 MARCA_FIM = "# END Site novo WG"
 TEXTO_DO_SITE_NOVO = "Um único escritório."     # aparece só na página inicial nova
 LOGO_DOS_EMAILS = f"https://{DOMINIO}/wp-content/uploads/2018/09/cropped-logo-wg-contabilidade.png"
+PASTA_BACKUPS = RAIZ / "backups_locaweb"
+MANIFESTO = PASTA_BACKUPS / "publicado.json"
+NA_RAIZ_TAMBEM = ("sitemap.xml", "robots.txt")      # o sitemap e o robots do site novo (os antigos vão para o backup)
+PERGUNTAR = True
 
 # Redirecionamentos temporários (302) enquanto o site novo é avaliado; trocar por 301 depois
 # que estiver aprovado, para o Google transferir a relevância das páginas antigas.
@@ -43,6 +58,12 @@ BLOCO_HTACCESS = r"""# BEGIN Site novo WG
 DirectoryIndex index.html index.php
 <IfModule mod_rewrite.c>
 RewriteEngine On
+# um endereço só: https://wgcontabilidade.com.br (sem www), mantendo o caminho
+RewriteCond %{HTTP_HOST} ^www\.wgcontabilidade\.com\.br$ [NC]
+RewriteRule ^(.*)$ https://wgcontabilidade.com.br/$1 [R=301,L]
+RewriteCond %{HTTP_HOST} ^wgcontabilidade\.com\.br$ [NC]
+RewriteCond %{SERVER_PORT} 80
+RewriteRule ^(.*)$ https://wgcontabilidade.com.br/$1 [R=301,L]
 RewriteCond %{HTTP_HOST} ^(www\.)?wgcontabilidade\.com\.br$ [NC]
 RewriteRule ^(contabilidade|escrita-fiscal|departamento-pessoal|recursos-humanos|servicos|abertura-de-empresas)/?$ /#servicos [R=302,NE,L]
 RewriteCond %{HTTP_HOST} ^(www\.)?wgcontabilidade\.com\.br$ [NC]
@@ -68,6 +89,7 @@ def arquivos_do_site() -> list[tuple[str, Path]]:
     """(caminho no servidor, arquivo local) — blog primeiro, página inicial por último."""
     lista = [(f"blog/{p.name}", p) for p in sorted((RAIZ / "blog").glob("*.html"))]
     lista.append(("privacidade.html", RAIZ / "privacidade.html"))
+    lista += [(n, RAIZ / n) for n in NA_RAIZ_TAMBEM if (RAIZ / n).exists()]
     lista.append(("index.html", RAIZ / "index.html"))
     faltando = [str(p) for _, p in lista if not p.exists()]
     if faltando:
@@ -100,8 +122,43 @@ def credenciais() -> tuple[str, str, str]:
     return host, usuario, senha
 
 
+class FTPSLocaweb(ftplib.FTP_TLS):
+    """FTPS do jeito que o servidor da Locaweb aceita: no canal de dados manda o comando, faz o aperto de mão TLS
+    (reaproveitando a sessão do canal de controle) e só depois lê a resposta 150."""
+
+    def ntransfercmd(self, cmd, rest=None):
+        host, porta = self.makepasv()
+        conn = socket.create_connection((host, porta), self.timeout)
+        try:
+            if rest is not None:
+                self.sendcmd(f"REST {rest}")
+            self.putcmd(cmd)
+            if self._prot_p:
+                conn = self.context.wrap_socket(conn, server_hostname=self.host, session=self.sock.session)
+            resp = self.getresp()
+            if resp[0] == "2":
+                resp = self.getresp()
+            if resp[0] != "1":
+                raise ftplib.error_reply(resp)
+        except BaseException:
+            conn.close()
+            raise
+        return conn, (ftplib.parse150(resp) if resp[:3] == "150" else None)
+
+
+def contexto_tls() -> ssl.SSLContext:
+    """TLS 1.2+ com as cifras antigas que o servidor exige; o certificado dele é autoassinado (o canal vai
+    cifrado, sem validar a cadeia, o que ainda é melhor que FTP aberto, que mandaria a senha em texto)."""
+    ctx = ssl.create_default_context()
+    ctx.set_ciphers("DEFAULT:@SECLEVEL=0")
+    ctx.minimum_version = ssl.TLSVersion.TLSv1_2
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    return ctx
+
+
 def conectar(host: str, usuario: str, senha: str) -> ftplib.FTP:
-    ftp = ftplib.FTP_TLS(timeout=60)
+    ftp = FTPSLocaweb(timeout=90, context=contexto_tls())
     ftp.connect(host, 21)
     try:
         ftp.auth()
@@ -117,7 +174,7 @@ def conectar(host: str, usuario: str, senha: str) -> ftplib.FTP:
         ftp.prot_p()
         print("Conectado com criptografia (FTPS).")
         return ftp
-    if input("Conectar sem criptografia (FTP comum, a senha trafega aberta)? [s/N] ").strip().lower() != "s":
+    if not PERGUNTAR or input("Conectar sem criptografia (FTP comum, a senha trafega aberta)? [s/N] ").strip().lower() != "s":
         sys.exit("Cancelado.")
     ftp = ftplib.FTP(timeout=60)
     ftp.connect(host, 21)
@@ -170,6 +227,31 @@ def criar_pasta(ftp: ftplib.FTP, pasta: str) -> None:
         pass  # já existe
 
 
+def digital(dados: bytes) -> str:
+    return hashlib.sha256(dados).hexdigest()
+
+
+def ler_manifesto() -> dict:
+    try:
+        return json.loads(MANIFESTO.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+def gravar_manifesto(m: dict) -> None:
+    PASTA_BACKUPS.mkdir(parents=True, exist_ok=True)
+    MANIFESTO.write_text(json.dumps(m, ensure_ascii=False, indent=1, sort_keys=True), encoding="utf-8")
+
+
+def guardar_do_servidor(ftp: ftplib.FTP, pasta: Path, atual: set[str]) -> None:
+    """Cópia dos arquivos da raiz que o site novo substitui (antes de sobrescrever)."""
+    for nome in ("index.html", "privacidade.html") + NA_RAIZ_TAMBEM:
+        if nome in atual and not (pasta / nome).exists():
+            dados = baixar(ftp, nome)
+            if dados is not None:
+                (pasta / nome).write_bytes(dados)
+
+
 # ------------------------------------------------------------------ conferência pela internet
 def baixar_url(url: str) -> tuple[int, str, str]:
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (publicacao WG)", "Cache-Control": "no-cache"})
@@ -212,6 +294,13 @@ def simular() -> None:
 
 def publicar(so_paginas: bool) -> None:
     lista = arquivos_do_site()
+    manifesto = ler_manifesto()
+    conteudo = {remoto: local.read_bytes() for remoto, local in lista}
+    if so_paginas:
+        lista = [(r, l) for r, l in lista if manifesto.get(r) != digital(conteudo[r])]
+        if not lista:
+            print("Nada mudou desde a última publicação na Locaweb; nada para enviar.")
+            return
     host, usuario, senha = credenciais()
     ftp = conectar(host, usuario, senha)
     try:
@@ -230,22 +319,20 @@ def publicar(so_paginas: bool) -> None:
             sys.exit("O site novo ainda não foi publicado nesta hospedagem. Rode primeiro sem --atualizar. Nada foi alterado.")
         if not so_paginas:
             print(f"\nVou enviar {len(lista)} arquivos e pôr o bloco do site novo no topo do .htaccess.")
-            if input("Publicar agora? [s/N] ").strip().lower() != "s":
+            if PERGUNTAR and input("Publicar agora? [s/N] ").strip().lower() != "s":
                 sys.exit("Cancelado. Nada foi alterado.")
-            pasta = RAIZ / "backups_locaweb" / datetime.now().strftime("%Y-%m-%d_%H%M%S")
+            pasta = PASTA_BACKUPS / datetime.now().strftime("%Y-%m-%d_%H%M%S")
             pasta.mkdir(parents=True, exist_ok=True)
             (pasta / "htaccess_antes.txt").write_text(ht_atual, encoding="utf-8")
             (pasta / "pasta_do_site.txt").write_text(f"{ftp.pwd()}\n" + "\n".join(sorted(atual)), encoding="utf-8")
-            for nome in ("index.html", "privacidade.html"):
-                if nome in atual:
-                    dados = baixar(ftp, nome)
-                    if dados is not None:
-                        (pasta / nome).write_bytes(dados)
+            guardar_do_servidor(ftp, pasta, atual)
             print(f"Backup salvo em {pasta}")
         criar_pasta(ftp, "blog")
         for i, (remoto, local) in enumerate(lista, 1):
-            enviar(ftp, remoto, local.read_bytes())
+            enviar(ftp, remoto, conteudo[remoto])
+            manifesto[remoto] = digital(conteudo[remoto])
             print(f"  [{i}/{len(lista)}] {remoto}")
+        gravar_manifesto(manifesto)
         if not so_paginas:
             enviar(ftp, ".htaccess", com_bloco(ht_atual).encode("utf-8"))
             print("  .htaccess atualizado (bloco do site novo no topo)")
@@ -264,7 +351,7 @@ def desfazer() -> None:
     try:
         atual = ir_para_raiz_do_site(ftp)
         print("Vou tirar o bloco do .htaccess e apagar index.html, privacidade.html e a pasta blog/ do site novo.")
-        if input("Voltar para o WordPress agora? [s/N] ").strip().lower() != "s":
+        if PERGUNTAR and input("Voltar para o WordPress agora? [s/N] ").strip().lower() != "s":
             sys.exit("Cancelado. Nada foi alterado.")
         ht = (baixar(ftp, ".htaccess") or b"").decode("utf-8", "replace")
         if MARCA_INI in ht:
@@ -274,6 +361,19 @@ def desfazer() -> None:
             if nome in atual:
                 ftp.delete(nome)
                 print(f"  apagado {nome}")
+        # o sitemap/robots de antes do site novo: volta a cópia do 1º backup que tem o arquivo; sem cópia, ele não
+        # existia antes e sai
+        backups = sorted(p for p in PASTA_BACKUPS.glob("20*") if p.is_dir())
+        for nome in NA_RAIZ_TAMBEM:
+            copia = next((p / nome for p in backups if (p / nome).exists()), None)
+            if copia is not None:
+                enviar(ftp, nome, copia.read_bytes())
+                print(f"  {nome} de antes devolvido")
+            elif nome in atual:
+                ftp.delete(nome)
+                print(f"  apagado {nome}")
+        if MANIFESTO.exists():
+            MANIFESTO.unlink()
         if "blog" in atual:
             ftp.cwd("blog")
             for n in nomes(ftp):
@@ -300,7 +400,10 @@ def main() -> None:
     g.add_argument("--simular", action="store_true", help="mostra o que seria feito, sem conectar")
     g.add_argument("--atualizar", action="store_true", help="só reenvia as páginas")
     g.add_argument("--desfazer", action="store_true", help="volta o WordPress como estava")
+    ap.add_argument("--sem-perguntar", action="store_true", help="não pede confirmação (tarefa agendada)")
     a = ap.parse_args()
+    global PERGUNTAR
+    PERGUNTAR = not a.sem_perguntar
     if a.simular:
         simular()
     elif a.desfazer:
