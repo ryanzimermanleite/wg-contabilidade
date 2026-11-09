@@ -187,7 +187,8 @@ def conectar(host: str, usuario: str, senha: str) -> ftplib.FTP:
 
 def nomes(ftp: ftplib.FTP) -> set[str]:
     try:
-        return {n.rstrip("/").split("/")[-1] for n in ftp.nlst()}
+        # a Locaweb devolve também "." e ".." na listagem
+        return {n.rstrip("/").split("/")[-1] for n in ftp.nlst()} - {".", "..", ""}
     except ftplib.error_perm:
         return set()
 
