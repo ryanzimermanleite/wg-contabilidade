@@ -40,7 +40,7 @@ CADERNOS = {
     "legalizacao": "Empresas",
     "automacao": "Tecnologia",
 }
-WHATSAPP = "https://api.whatsapp.com/send?phone=5519991833925&text=" + quote("Olá! Vim pelo blog do site e quero falar com um especialista.")
+WHATSAPP = "https://api.whatsapp.com/send?phone=5519997816418&text=" + quote("Olá! Vim pelo blog do site e quero falar com um especialista.")
 NA_INICIAL = 4          # 1 destaque + 3 na lista da página inicial
 MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"]
 

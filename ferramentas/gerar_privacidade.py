@@ -48,7 +48,7 @@ CORPO = f"""<section class="band band--white">
         <p>Você pode, a qualquer momento, pedir a confirmação de que tratamos os seus dados, o acesso a eles, a correção de dados incompletos ou desatualizados, a anonimização, o bloqueio ou a eliminação de dados desnecessários, a portabilidade, a informação sobre compartilhamentos e a revogação do consentimento, quando o tratamento se basear nele. Os pedidos são atendidos nos prazos da LGPD; alguns dados podem ser mantidos quando a lei exigir a sua guarda.</p>
 
         <h2>9. Como falar sobre privacidade</h2>
-        <p>Para exercer os seus direitos ou tirar dúvidas sobre esta política, fale com a WG Contabilidade pelo WhatsApp, pelo telefone <a href="tel:+5519997816418">+55 19 99781-6418</a> ou pessoalmente no endereço acima, de segunda a quinta, das 8h às 18h, e na sexta, das 8h às 17h.</p>
+        <p>Para exercer os seus direitos ou tirar dúvidas sobre esta política, fale com a WG Contabilidade pelo WhatsApp ou pelo telefone <a href="tel:+5519997816418">+55 19 99781-6418</a>, ou pessoalmente no endereço acima, de segunda a quinta, das 8h às 18h, e na sexta, das 8h às 17h.</p>
 
         <h2>10. Alterações desta política</h2>
         <p>Esta política pode ser atualizada para refletir mudanças na legislação ou nos nossos serviços. A versão em vigor é sempre a publicada nesta página, com a data de atualização indicada no topo.</p>
