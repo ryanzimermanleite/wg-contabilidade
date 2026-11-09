@@ -524,10 +524,10 @@ h1 .w > span{display:inline-block;animation:wordUp .95s var(--ease) both;animati
   .brand-word{display:none}
   .tbl .hide-xs{display:none}
 }
+/* Muitos celulares Android ligam "reduzir animações" junto com a economia de bateria; o site
+   mantém as animações (são leves) e só desliga a rolagem suave nesse caso. */
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  *,*::before,*::after{animation:none!important;transition:none!important}
-  .sym{translate:none}
 }
 
 /* legenda e marcadores de "incluso nos honorários" x "custo adicional" */

@@ -524,10 +524,10 @@ h1 .w > span{display:inline-block;animation:wordUp .95s var(--ease) both;animati
   .brand-word{display:none}
   .tbl .hide-xs{display:none}
 }
+/* Muitos celulares Android ligam "reduzir animações" junto com a economia de bateria; o site
+   mantém as animações (são leves) e só desliga a rolagem suave nesse caso. */
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  *,*::before,*::after{animation:none!important;transition:none!important}
-  .sym{translate:none}
 }
 
 /* legenda e marcadores de "incluso nos honorários" x "custo adicional" */
@@ -1321,7 +1321,7 @@ h1 .w > span{display:inline-block;animation:wordUp .95s var(--ease) both;animati
 (function(){
   'use strict';
   var doc = document, win = window;
-  var reduce = !!(win.matchMedia && win.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var reduce = false; // animações sempre ativas, mesmo com "reduzir animações" ligado no celular
   var hasIO = 'IntersectionObserver' in win;
   var FOUNDED = 1976;
   var yearNow = new Date().getFullYear();
@@ -1500,7 +1500,7 @@ h1 .w > span{display:inline-block;animation:wordUp .95s var(--ease) both;animati
       }, {threshold: .35});
       dio.observe(device);
     }
-    var mq = win.matchMedia('(min-width: 1000px) and (min-height: 700px) and (prefers-reduced-motion: no-preference)');
+    var mq = win.matchMedia('(min-width: 1000px) and (min-height: 700px)');
     function setMode(){
       pinned = mq.matches;
       sec.classList.toggle('is-pinned', pinned);
